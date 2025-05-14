@@ -2,9 +2,9 @@ name: Java JSP CI/CD
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   build-test-deploy:
@@ -23,22 +23,29 @@ jobs:
       - name: Build e Test con Maven
         run: mvn clean package
 
-      - name: Login su Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: \${{secrets.DOCKER_HUB_USERNAME}}
-          password: \${{secrets.DOCKER_HUB_TOKEN}}
-
-      - name: Costruisci e pubblica immagine Docker
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: true
-          tags: tuo-username-dockerhub/nome-app:latest
-
-      - name: Deploy su Docker Desktop
+# Build diretto su Docker Hub senza passare da DockerHub che richiede i secret
+      - name: Build e Push Docker image
         run: |
-          docker pull tuo-username-dockerhub/nome-app:latest
-          docker stop jsp-app || true
-          docker rm jsp-app || true
-          docker run -d -p 8080:8080 --name jsp-app tuo-username-dockerhub/nome-app:latest
+          docker build -t khamsin/date-webapp:latest .
+          docker push khamsin/date-webapp:latest
+
+# Build su Docker Hub con secret da configurare se l'accesso a DockerHub è Pro
+#      - name: Login su Docker Hub
+#        uses: docker/login-action@v2
+#        with:
+#          username: \${{secrets.DOCKER_HUB_USERNAME}}
+#          password: \${{secrets.DOCKER_HUB_TOKEN}}
+
+#      - name: Costruisci e pubblica immagine Docker
+#        uses: docker/build-push-action@v4
+#        with:
+#          context: .
+#          push: true
+#          tags: khamsin/date-webapp:latest
+
+#      - name: Deploy su Docker Desktop
+#        run: |
+#          docker pull khamsin/date-webapp:latest
+#          docker stop jsp-app || true
+#          docker rm jsp-app || true
+#          docker run -d -p 8080:8080 --name jsp-app khamsin/date-webapp:latest
