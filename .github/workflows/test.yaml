@@ -29,6 +29,11 @@ jobs:
 #          docker build -t khamsin/date-webapp:latest .
 #          docker push khamsin/date-webapp:latest
 
+      - name: Check if secret exists
+        run: |
+          echo ${{ secrets.DOCKER_HUB_USERNAME }}
+          echo ${{ secrets.DOCKER_HUB_TOKEN }}
+
 # Build su Docker Hub con secret da configurare se l'accesso a DockerHub è Pro
       - name: Login su Docker Hub
         uses: docker/login-action@v2
