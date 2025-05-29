@@ -1,4 +1,4 @@
-name: Java JSP CI/CD
+name: Test Java JSP CI/CD
 
 on:
   push:
