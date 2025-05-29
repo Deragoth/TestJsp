@@ -2,10 +2,10 @@ name: Java JSP CI/CD
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
-
+    branches: [ develop ]
+#  pull_request:
+#    branches: [ master ]
+  workflow_dispatch:
 jobs:
   build-test-deploy:
     runs-on: ubuntu-latest
