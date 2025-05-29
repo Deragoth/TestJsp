@@ -1,8 +1,6 @@
 name: Debug Docker Hub Secrets
 on:
   workflow_dispatch:  # Trigger manuale per il debug
-  push:
-    branches: [ main ]
 
 jobs:
   debug-secrets:
