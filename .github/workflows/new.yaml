@@ -1,0 +1,49 @@
+name: test
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  test-new:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Docker Compose
+        run: sudo apt-get update && sudo apt-get install -y docker-compose
+
+      - name: Create Docker Compose file
+        run: |
+          cat > docker-compose.yml <<EOF
+          version: '3'
+          services:
+            maven:
+              image: maven:3.8-openjdk-17
+              container_name: testMediaset
+              volumes:
+                - .:/workspace
+              working_dir: /workspace
+              command: tail -f /dev/null
+          
+            tomcat:
+              image: tomcat:10
+              container_name: tomcat-server
+              ports:
+                - "8080:8080"
+          EOF
+
+      - name: Start Docker Compose
+        run: docker-compose up -d
+
+      - name: Build with Maven
+        run: docker exec testMediaset mvn -B package --file pom.xml
+
+      - name: Test with Maven
+        run: docker exec testMediaset mvn -B test --file pom.xml
+
+      - name: Verify Tomcat is running
+        run: curl http://localhost:8080

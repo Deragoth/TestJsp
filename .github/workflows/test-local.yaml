@@ -1,0 +1,26 @@
+name: Creazione container di Test
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test-build:
+    runs-on: ubuntu-latest
+
+    container:
+      # Questa immagine Docker sarà usata per tutti gli step in questo job
+      # Ha già JDK 17 e Maven preinstallati
+      image: maven:3.8-openjdk-17
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build with Maven
+        run: mvn -B package --file pom.xml
+
+      - name: Test with Maven
+        run: mvn -B test --file pom.xml
+

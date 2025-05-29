@@ -1,12 +1,25 @@
+# Fase 1: Ambiente di build con Maven e OpenJDK 17
+FROM maven:3.8-openjdk-17 AS build
+LABEL Author="Tuo Nome"
+
+# Imposta la directory di lavoro
+WORKDIR /app
+
+# Copia il file WAR locale nel container
+COPY ../../../target/date-wrapper.war /app/date-wrapper.war
+
+# Fase 2: Ambiente di runtime con Tomcat 10
 FROM tomcat:10-jdk17
-# Rimuovi le app predefinite di Tomcat
+LABEL Author="Tuo Nome"
+
+# Rimuovi le applicazioni predefinite di Tomcat
 RUN rm -rf /usr/local/tomcat/webapps/*
 
-# Copia il file WAR nella directory webapps
-COPY target/*.war /usr/local/tomcat/webapps/date-webapp.war
+# Copia il WAR dalla fase di build nella directory webapps di Tomcat
+COPY --from=build /app/date-wrapper.war /usr/local/tomcat/webapps/ROOT.war
 
-# Opzionale: Configurazione personalizzata di Tomcat
-# COPY server.xml /usr/local/tomcat/conf/
-
+# Esponi la porta 8080
 EXPOSE 8080
+
+# Avvia Tomcat
 CMD ["catalina.sh", "run"]
