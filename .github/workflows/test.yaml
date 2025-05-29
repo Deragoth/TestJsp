@@ -29,8 +29,6 @@ jobs:
 #          docker build -t khamsin/date-webapp:latest .
 #          docker push khamsin/date-webapp:latest
 
-    runs-on: ubuntu-latest
-    steps:
       - name: Check Docker Hub secrets
         run: |
           echo "=== Checking Docker Hub Secrets ==="
